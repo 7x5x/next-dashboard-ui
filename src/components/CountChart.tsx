@@ -10,27 +10,38 @@ import {
 const data = [
   {
     name: "Total",
-    count: 106,
+    count: 2000,
     fill: "white",
   },
   {
-    name: "Girls",
-    count: 53,
+    name: "FEMALE",
+    count: 653,
     fill: "#FAE27C",
   },
   {
-    name: "Boys",
-    count: 53,
+    name: "MALE",
+    count: 1347,
     fill: "#C3EBFA",
   },
 ];
 
 const CountChart = () => {
+  // Calculate percentages
+  const totalCount = data[0].count; // Total count from data
+  const maleCount = data[2].count; // Male count from data
+  const femaleCount = data[1].count; // Female count from data
+
+  const malePercentage = ((maleCount / totalCount) * 100).toFixed(0); // Male percentage
+  const femalePercentage = ((femaleCount / totalCount) * 100).toFixed(0); // Female percentage
+
   return (
     <div className="bg-white rounded-xl w-full h-full p-4">
       {/* TITLE */}
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-semibold">Students</h1>
+        <h1 className="text-lg font-semibold">
+          PAID IMPRESSIONS BY{" "}
+          <span className=" text-gray-300 font-normal">/ Gender</span>
+        </h1>
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
       {/* CHART */}
@@ -59,13 +70,15 @@ const CountChart = () => {
       <div className="flex justify-center gap-16">
         <div className="flex flex-col gap-1">
           <div className="w-5 h-5 bg-lamaSky rounded-full" />
-          <h1 className="font-bold">1,234</h1>
-          <h2 className="text-xs text-gray-300">Boys (55%)</h2>
+          <h1 className="font-bold">{maleCount}</h1>
+          <h2 className="text-xs text-gray-300">MALE ({malePercentage}%)</h2>
         </div>
         <div className="flex flex-col gap-1">
           <div className="w-5 h-5 bg-lamaYellow rounded-full" />
-          <h1 className="font-bold">1,234</h1>
-          <h2 className="text-xs text-gray-300">Girls (45%)</h2>
+          <h1 className="font-bold">{femaleCount}</h1>
+          <h2 className="text-xs text-gray-300">
+            FEMALE ({femalePercentage}%)
+          </h2>
         </div>
       </div>
     </div>
