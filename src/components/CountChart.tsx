@@ -1,4 +1,5 @@
 "use client";
+import { GenderProps } from "@/types/GenderProps";
 import Image from "next/image";
 import {
   RadialBarChart,
@@ -7,25 +8,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  {
-    name: "Total",
-    count: 2000,
-    fill: "white",
-  },
-  {
-    name: "FEMALE",
-    count: 653,
-    fill: "#FAE27C",
-  },
-  {
-    name: "MALE",
-    count: 1347,
-    fill: "#C3EBFA",
-  },
-];
 
-const CountChart = () => {
+
+const CountChart = ({ data }: { data: GenderProps[] }) => {
   // Calculate percentages
   const totalCount = data[0].count; // Total count from data
   const maleCount = data[2].count; // Male count from data

@@ -1,6 +1,8 @@
+import AdminPage from "./admin/dashboard/page"
+
 const Homepage = () => {
   return (
-    <div className=''>Homepage</div>
+   <AdminPage></AdminPage>
   )
 }
 

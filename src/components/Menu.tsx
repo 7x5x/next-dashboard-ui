@@ -15,11 +15,16 @@ const menuItems = [
 
       {
         icon: "/subject.png",
-        label: "Data",
-        href: "/admin/data",
+        label: "Paid Impressions",
+        href: "/admin/PaidImpressions",
         visible: ["admin"],
       },
-
+      {
+        icon: "/subject.png",
+        label: "Clike Rate",
+        href: "/admin/clikeRate",
+        visible: ["admin"],
+      },
       {
         icon: "/announcement.png",
         label: "Announcements",
