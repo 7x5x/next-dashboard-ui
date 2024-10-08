@@ -21,8 +21,20 @@ const menuItems = [
       },
       {
         icon: "/subject.png",
-        label: "Clike Rate",
-        href: "/admin/clikeRate",
+        label: "Gender",
+        href: "/admin/gender",
+        visible: ["admin"],
+      },
+      {
+        icon: "/subject.png",
+        label: "Click Rate",
+        href: "/admin/clickRate",
+        visible: ["admin"],
+      },
+      {
+        icon: "/subject.png",
+        label: "Interest",
+        href: "/admin/interest",
         visible: ["admin"],
       },
       {

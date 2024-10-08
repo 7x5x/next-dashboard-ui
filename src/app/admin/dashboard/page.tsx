@@ -1,14 +1,30 @@
+import { IInterest } from "@/backend/modules/Interest";
+import { DashboardServices } from "@/backend/services/DashboardServices";
 import Announcements from "@/components/Announcements";
 import ClikeRateChart from "@/components/AttendanceChart";
 import { ChartCard } from "@/components/ChartCard";
 import CountChart from "@/components/CountChart";
 import EventCalendar from "@/components/EventCalendar";
 import { PaidImpressionsChart } from "@/components/FinanceChart";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import UserCard from "@/components/UserCard";
 import { RANGE_OPTIONS } from "@/lib/rangeOptions";
+import { ClikeRateProps } from "@/types/ClikeRateProps";
 import { PaidImpressionsProps } from "@/types/OrderByDayProps";
+
+const fetchData = async () => {
+  try {
+    return  await DashboardServices.getAllDashboardData();
+   
+   
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+  }
+};
+
 const data: PaidImpressionsProps[] = [
   { date: "2024-09-20", income: 400, expense: 240 },
+   { date: "2024-10-06", income: 11, expense: 111 },
   { date: "2024-09-21", income: 300, expense: 139 },
   { date: "2024-09-22", income: 200, expense: 980 },
   { date: "2024-09-23", income: 278, expense: 390 },
@@ -23,26 +39,11 @@ const data: PaidImpressionsProps[] = [
   { date: "2024-10-02", income: 420, expense: 510 },
   { date: "2024-10-03", income: 450, expense: 540 },
   { date: "2024-10-04", income: 470, expense: 560 },
+  
 ];
 
-const gendeDdata = [
-  {
-    name: "Total",
-    count: 2000,
-    fill: "white",
-  },
-  {
-    name: "FEMALE",
-    count: 653,
-    fill: "#FAE27C",
-  },
-  {
-    name: "MALE",
-    count: 1347,
-    fill: "#C3EBFA",
-  },
-];
 
+ 
 const clikeRateChartData = [
   {
     name: "Mon",
@@ -70,17 +71,37 @@ const clikeRateChartData = [
     absent: 55,
   },
 ];
-const AdminPage = () => {
+const AdminPage = async () => {
+  const dashboardData = await fetchData();
+
+  // Handle potential null from fetchData
+  if (!dashboardData) {
+    return <div>Error loading dashboard data.</div>; // Fallback UI
+  }
+
+  const {
+    vistorCount = 0,
+    genderData = [], // Provide default values if undefined
+    clikeRateChartData = [] as ClikeRateProps[],
+    interest = [],
+    formattedPaidImpressions = [] as PaidImpressionsProps[],
+  } = dashboardData;
+
+
   const totalSalesRangeOption = RANGE_OPTIONS.last_7_days;
   return (
     <div className="p-4 flex gap-4 flex-col md:flex-row">
       {/* LEFT */}
       <div className="w-full lg:full  flex flex-col gap-8">
         {/* USER CARDS */}
+        <div className=" h-30 w-full grid grid-cols-5 gap-6">
+          <InterestCard interest={interest} />
+          <TotalVistorCard vistorCount={vistorCount} />
+        </div>
 
         <div className="flex gap-4 flex-col lg:flex-row">
           <div className="w-full lg:w-1/3 h-[450px]">
-            <CountChart data={gendeDdata} />
+            <CountChart data={genderData} />
           </div>
 
           <div className="w-full lg:w-2/3 h-[450px]">
@@ -94,7 +115,7 @@ const AdminPage = () => {
           selectedRangeLabel={totalSalesRangeOption.label}
         >
           <div className="w-full h-[500px]">
-            <PaidImpressionsChart data={data} />
+            <PaidImpressionsChart data={formattedPaidImpressions} />
           </div>
         </ChartCard>
       </div>
@@ -103,3 +124,50 @@ const AdminPage = () => {
 };
 
 export default AdminPage;
+
+
+const TotalVistorCard = ({ vistorCount }: { vistorCount: number }) => {
+  return (
+    <Card className=" col-span-2">
+      <CardHeader>
+        <h1 className=" w-full text-center  font-bold text-md">Visitors</h1>
+        <p className=" w-full text-center text-sm text-gray-300">avrg</p>
+      </CardHeader>
+      <CardContent>
+        <h1 className=" w-full text-center text-lamaYellow font-semibold  text-4xl">
+          {vistorCount}
+        </h1>
+        <p className=" w-full text-center text-sm text-gray-300">per day</p>
+      </CardContent>
+    </Card>
+  );
+};
+
+const InterestCard = ({ interest }: { interest: IInterest[] }) => {
+  return (
+    <Card className=" col-span-3 ">
+      <CardHeader>
+        <h1 className=" w-full   font-bold text-md">
+          Viwe delivery insights by :
+          <span className=" text-lamaYellow ml-4 font-normal">
+            I N T E R E S T
+          </span>
+        </h1>
+      </CardHeader>
+      <CardContent>
+        {interest.map((item, i) => {
+          return (
+            <div key={i} className="flex justify-between items-center">
+              <h1 className="">
+                <span>{i + 1}.</span>
+                {item.name}
+              </h1>
+              <p className="">{item.value}</p>
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
+};
+

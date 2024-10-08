@@ -1,8 +1,7 @@
-// backend/models/GenderData.ts
 import mongoose, { Schema, Document } from "mongoose";
 
 // Define the interface for GenderData
-export interface IGenderData  {
+export interface IGenderData {
   male: number;
   female: number;
   date: Date;
@@ -15,12 +14,12 @@ const genderDataSchema = new Schema<IGenderData & Document>(
     female: { type: Number, required: true },
     date: { type: Date, default: Date.now },
   },
-  { timestamps: true }
-); // Automatically adds createdAt and updatedAt fields
-
-// GenderData Model
-const GenderData = mongoose.model<IGenderData & Document>(
-  "GenderData",
-  genderDataSchema
+  { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
+
+// Prevent model overwrite by checking if it exists
+const GenderData =
+  mongoose.models.GenderData ||
+  mongoose.model<IGenderData & Document>("GenderData", genderDataSchema);
+
 export default GenderData;

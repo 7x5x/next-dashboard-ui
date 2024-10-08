@@ -27,18 +27,17 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { IPaidImpressions } from "@/backend/modules/PaidImpressions";
+import { IGenderData } from "@/backend/modules/Gender";
+import { IInterest } from "@/backend/modules/Interest";
 
 // Define the schema for validation
 const FormSchema = z.object({
-  firstLine: z.number().min(0, "First line must be a positive number."),
-  secondLine: z.number().min(0, "Second line must be a positive number."),
-  date: z.date({
-    required_error: "A date is required.",
-  }),
+  name: z.string().min(0, "First line must be a positive number."),
+  value: z.number().min(0, "Second line must be a positive number."),
+  
 });
 
- 
-export default function PaidImpressionsData() {
+export default function InterestForm() {
   return <CardWrapper />;
 }
 
@@ -50,16 +49,14 @@ const CardWrapper = () => {
 
   // Function to handle form submission
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    
     try {
-       const requestData: IPaidImpressions = {
-         firstLine: Number(data.firstLine), // Convert to number
-         secondLine: Number(data.secondLine), // Convert to number
-         date: data.date,
-       };
-       
+      const requestData: IInterest = {
+        name: data.name, // Convert to number
+        value: Number(data.value), // Convert to number
+      
+      };
 
-      const response = await fetch("/api/paidImpressions", {
+      const response = await fetch("/api/Interest", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,12 +68,10 @@ const CardWrapper = () => {
         toast({
           title: "Data saved successfully",
         });
-       form.reset({
-         firstLine: 0, // Reset firstLine to 0 or any default value you want
-         secondLine: 0, // Reset secondLine to 0 or any default value you want
-        
-       });
-        
+        form.reset({
+          name: '', // Reset name to 0 or any default value you want
+          value: 0, // Reset value to 0 or any default value you want
+        });
       } else {
         toast({
           title: "Error saving data",
@@ -105,7 +100,7 @@ const CardWrapper = () => {
             >
               <FormField
                 control={form.control}
-                name="firstLine"
+                name="name"
                 render={({ field }) => (
                   <FormItem className="flex flex-col col-span-2">
                     <FormLabel>First Line</FormLabel>
@@ -113,11 +108,8 @@ const CardWrapper = () => {
                       <Input
                         {...field}
                         placeholder="Enter first line (Number)"
-                        type="number"
-                        onChange={(e) => {
-                          field.onChange(e); // Capture the change event
-                          field.onChange(Number(e.target.value)); // Convert to number
-                        }}
+                        
+                       
                       />
                     </FormControl>
                     <FormMessage />
@@ -126,7 +118,7 @@ const CardWrapper = () => {
               />
               <FormField
                 control={form.control}
-                name="secondLine"
+                name="value"
                 render={({ field }) => (
                   <FormItem className="flex flex-col col-span-2">
                     <FormLabel>Second Line</FormLabel>
@@ -145,48 +137,11 @@ const CardWrapper = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col col-span-2">
-                    <FormLabel>Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[240px] pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange} // Correctly bind the date selection
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button className=" col-span-1 mt-5 hover:scale-[1.02]  duration-[200] transition-transform  ease-in-out" type="submit">
+             
+              <Button
+                className=" col-span-1 mt-5 hover:scale-[1.02]  duration-[200] transition-transform  ease-in-out"
+                type="submit"
+              >
                 Save
               </Button>
             </form>

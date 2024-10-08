@@ -17,8 +17,9 @@ const clickRateSchema = new Schema<IClickRate & Document>(
 ); // Automatically adds createdAt and updatedAt fields
 
 // ClickRate Model
-const ClickRate = mongoose.model<IClickRate & Document>(
-  "ClickRate",
-  clickRateSchema
-);
+ 
+const ClickRate =
+  mongoose.models.ClickRate ||
+  mongoose.model<IClickRate>("ClickRate", clickRateSchema);
+
 export default ClickRate;

@@ -26,19 +26,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { IPaidImpressions } from "@/backend/modules/PaidImpressions";
+import { IClickRate } from "@/backend/modules/ClickRate";
 
 // Define the schema for validation
 const FormSchema = z.object({
-  firstLine: z.number().min(0, "First line must be a positive number."),
-  secondLine: z.number().min(0, "Second line must be a positive number."),
+  ClickRate: z.number().min(0, "First line must be a positive number."),
   date: z.date({
     required_error: "A date is required.",
   }),
 });
 
+// Define the interface for paid impressions
  
-export default function PaidImpressionsData() {
+
+export default function ClickRateForm() {
   return <CardWrapper />;
 }
 
@@ -50,16 +51,13 @@ const CardWrapper = () => {
 
   // Function to handle form submission
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    
     try {
-       const requestData: IPaidImpressions = {
-         firstLine: Number(data.firstLine), // Convert to number
-         secondLine: Number(data.secondLine), // Convert to number
-         date: data.date,
-       };
-       
+      const requestData: IClickRate = {
+        clickRate: Number(data.ClickRate), // Convert to number
+        date: data.date,
+      };
 
-      const response = await fetch("/api/paidImpressions", {
+      const response = await fetch("/api/ClickData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,12 +69,9 @@ const CardWrapper = () => {
         toast({
           title: "Data saved successfully",
         });
-       form.reset({
-         firstLine: 0, // Reset firstLine to 0 or any default value you want
-         secondLine: 0, // Reset secondLine to 0 or any default value you want
-        
-       });
-        
+        form.reset({
+          ClickRate: 0, // Reset ClickRate to 0 or any default value you want
+        });
       } else {
         toast({
           title: "Error saving data",
@@ -105,7 +100,7 @@ const CardWrapper = () => {
             >
               <FormField
                 control={form.control}
-                name="firstLine"
+                name="ClickRate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col col-span-2">
                     <FormLabel>First Line</FormLabel>
@@ -124,32 +119,12 @@ const CardWrapper = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="secondLine"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col col-span-2">
-                    <FormLabel>Second Line</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter second line (Number)"
-                        type="number"
-                        onChange={(e) => {
-                          field.onChange(e); // Capture the change event
-                          field.onChange(Number(e.target.value)); // Convert to number
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+             
               <FormField
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col col-span-2">
+                  <FormItem className="flex flex-col  col-span-2">
                     <FormLabel>Date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -186,7 +161,10 @@ const CardWrapper = () => {
                   </FormItem>
                 )}
               />
-              <Button className=" col-span-1 mt-5 hover:scale-[1.02]  duration-[200] transition-transform  ease-in-out" type="submit">
+              <Button
+                className=" col-span-1 mt-5 hover:scale-[1.02]  duration-[200] transition-transform  ease-in-out"
+                type="submit"
+              >
                 Save
               </Button>
             </form>

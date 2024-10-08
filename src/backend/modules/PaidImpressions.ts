@@ -2,14 +2,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 // Define the interface for LineItem
-export interface ILineItem  {
+export interface IPaidImpressions {
   firstLine: number;
   secondLine: number;
   date: Date;
 }
 
 // Create the schema for LineItem
-const lineItemSchema = new Schema<ILineItem & Document>(
+const lineItemSchema = new Schema<IPaidImpressions & Document>(
   {
     firstLine: { type: Number, required: true },
     secondLine: { type: Number, required: true },
@@ -19,8 +19,12 @@ const lineItemSchema = new Schema<ILineItem & Document>(
 ); // Automatically adds createdAt and updatedAt fields
 
 // LineItem Model
-const LineItem = mongoose.model<ILineItem & Document>(
-  "LineItem",
-  lineItemSchema
-);
-export default LineItem;
+ 
+const IPaidImpressionsData =
+  mongoose.models.IPaidImpressionsData ||
+  mongoose.model<IPaidImpressions & Document>(
+    "IPaidImpressionsData",
+    lineItemSchema
+  );
+
+export default IPaidImpressionsData;

@@ -2,24 +2,32 @@
 
 import ClickRate, { IClickRate } from "../modules/ClickRate";
 
-export class GenderServices {
-  static createGenderData = async (data: IClickRate) => {
-    const genderData = new ClickRate(data);
+export class ClikeRateServices {
+  static createClikeData = async (data: IClickRate) => {
+
+     const newData: IClickRate = {
+       ...data,
+       date: data.date ? new Date(data.date) : new Date(),
+     };
+    const genderData = new ClickRate(newData);
     return await genderData.save();
   };
 
-  static getAllGenderData = async () => {
+  static getAllClikeData = async () => {
     return await ClickRate.find();
   };
-  static getGenderDataById = async (id: string) => {
+  getAllClikeData = async () => {
+    return await ClickRate.find();
+  };
+  static getClikeDataById = async (id: string) => {
     return await ClickRate.findById(id);
   };
 
-  static updateGenderData = async (id: string, data: Partial<IClickRate>) => {
+  static updateClikeData = async (id: string, data: Partial<IClickRate>) => {
     return await ClickRate.findByIdAndUpdate(id, data, { new: true });
   };
 
-  static deleteGenderData = async (id: string) => {
+  static deleteClikeData = async (id: string) => {
     return await ClickRate.findByIdAndDelete(id);
   };
 }
