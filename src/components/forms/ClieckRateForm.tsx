@@ -90,7 +90,7 @@ const CardWrapper = () => {
     <>
       <Card>
         <CardHeader>
-          <h1>Paid Impressions</h1>
+          <h1>Click Rate </h1>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -119,7 +119,7 @@ const CardWrapper = () => {
                   </FormItem>
                 )}
               />
-             
+
               <FormField
                 control={form.control}
                 name="date"

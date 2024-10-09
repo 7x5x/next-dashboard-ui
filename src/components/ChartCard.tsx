@@ -18,42 +18,45 @@ import { subDays } from "date-fns"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { ReactNode, useState } from "react"
 import { DateRange } from "react-day-picker"
-import { date } from "zod"
 
 type ChartCardProps = {
-  title: string
-  queryKey: string
-  selectedRangeLabel: string
-  children: ReactNode
-}
+  title: string;
+  queryKey: string;
+  selectedRangeLabel: string;
+  children: ReactNode;
+  setTotalSalesRangeOption?:any;
+};
 
 export function ChartCard({
   title,
   children,
   queryKey,
   selectedRangeLabel,
+  setTotalSalesRangeOption,
 }: ChartCardProps) {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 29),
     to: new Date(),
-  })
+  });
 
   function setRange(range: keyof typeof RANGE_OPTIONS | DateRange) {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams);
     if (typeof range === "string") {
-      params.set(queryKey, range)
-      params.delete(`${queryKey}From`)
-      params.delete(`${queryKey}To`)
+      params.set(queryKey, range);
+      params.delete(`${queryKey}From`);
+      params.delete(`${queryKey}To`);
     } else {
-      if (range.from == null || range.to == null) return
-      params.delete(queryKey)
-      params.set(`${queryKey}From`, range.from.toISOString())
-      params.set(`${queryKey}To`, range.to.toISOString())
+      if (range.from == null || range.to == null) return;
+      params.delete(queryKey);
+      params.set(`${queryKey}From`, range.from.toISOString());
+      params.set(`${queryKey}To`, range.to.toISOString());
     }
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    // setTotalSalesRangeOption(range);
+    console.log(range)
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   return (
@@ -90,8 +93,8 @@ export function ChartCard({
                     <DropdownMenuItem className="hover:bg-auto">
                       <Button
                         onClick={() => {
-                          if (dateRange == null) return
-                          setRange(dateRange)
+                          if (dateRange == null) return;
+                          setRange(dateRange);
                         }}
                         disabled={dateRange == null}
                         className="w-full"
@@ -108,5 +111,5 @@ export function ChartCard({
       </CardHeader>
       <CardContent>{children}</CardContent>
     </Card>
-  )
+  );
 }

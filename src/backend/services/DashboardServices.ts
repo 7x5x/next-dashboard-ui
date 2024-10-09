@@ -96,21 +96,43 @@ import PaidImpressions, { IPaidImpressions } from "../modules/PaidImpressions";
 // }
 
 export class DashboardServices {
-  static getAllDashboardData = async () => {
-    // Fetch gender data and click rate data
-    const genderDataRaw = await GenderData.find().select(
-      "-_id -createdAt -updatedAt -__v"
-    );
-    const clickRate = await ClickRate.find().select(
-      "-_id -createdAt -updatedAt -__v"
-    );
-    const interest = await InterestData.find().select(
-      "-_id -createdAt -updatedAt -__v"
-    );
-    const paidImpressions = await PaidImpressions.find()
+  static getAllDashboardData = async (startDate?: Date, endDate?: Date | null) => {
+
+    let end: Date = new Date(); // Default to current date
+    let start: Date = new Date(end.getDate() - 7); // Default to current date -7
+
+    if (startDate) {
+      start = new Date(startDate);
+    }
+    if (endDate ) {
+      end.setDate(endDate.getDate());
+     } else if (endDate==null) {
+      end = new Date();
+    }
+
+    const startISO = start.toISOString();
+    const endISO = end.toISOString();
+    // Fetch gender data between the specified dates
+    const genderDataRaw = await GenderData.find({
+      date: { $gte: startISO, $lte: endISO },
+    }).select("-_id -createdAt -updatedAt -__v");
+
+    // Fetch click rate data between the specified dates
+    const clickRate = await ClickRate.find({
+      date: { $gte: startISO, $lte: endISO },
+    }).select("-_id -createdAt -updatedAt -__v");
+
+    // Fetch interest data between the specified dates (if it includes a date)
+    const interest = await InterestData.find({
+      date: { $gte: startISO, $lte: endISO },
+    }).select("-_id -createdAt -updatedAt -__v");
+
+    // Fetch paid impressions between the specified dates
+    const paidImpressions = await PaidImpressions.find({
+      date: { $gte: startISO, $lte: endISO },
+    })
       .select("-_id -createdAt -updatedAt -__v")
       .sort({ date: 1 }); // Ascending order
-
     // Group gender data by date and calculate total male and female counts
     const groupedGenderData = genderDataRaw.reduce((acc, data) => {
       const formattedDate = new Date(data.date).toISOString().split("T")[0];

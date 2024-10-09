@@ -91,7 +91,7 @@ const CardWrapper = () => {
     <>
       <Card>
         <CardHeader>
-          <h1>Paid Impressions</h1>
+          <h1>Gender Data</h1>
         </CardHeader>
         <CardContent>
           <Form {...form}>

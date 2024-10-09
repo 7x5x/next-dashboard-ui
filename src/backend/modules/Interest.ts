@@ -4,6 +4,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IInterest {
   name: string;
   value: number;
+  date: Date;
 }
 
 // Create the schema for Interest data
@@ -11,6 +12,7 @@ const InterestDataSchema = new Schema<IInterest & Document>(
   {
     name: { type: String, required: true },
     value: { type: Number, required: true },
+    date: { type: Date, default: Date.now },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );

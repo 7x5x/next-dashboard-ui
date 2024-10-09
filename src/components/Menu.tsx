@@ -9,32 +9,32 @@ const menuItems = [
       {
         icon: "/home.png",
         label: "Dashboard",
-        href: "/admin/dashboard",
+        href: "/dashboard",
         visible: ["admin", "teacher", "student", "parent"],
       },
 
       {
         icon: "/subject.png",
         label: "Paid Impressions",
-        href: "/admin/PaidImpressions",
+        href: "/PaidImpressions",
         visible: ["admin"],
       },
       {
         icon: "/subject.png",
         label: "Gender",
-        href: "/admin/gender",
+        href: "/gender",
         visible: ["admin"],
       },
       {
         icon: "/subject.png",
         label: "Click Rate",
-        href: "/admin/clickRate",
+        href: "/clickRate",
         visible: ["admin"],
       },
       {
         icon: "/subject.png",
         label: "Interest",
-        href: "/admin/interest",
+        href: "/interest",
         visible: ["admin"],
       },
       {

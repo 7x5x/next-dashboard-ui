@@ -32,9 +32,11 @@ import { IInterest } from "@/backend/modules/Interest";
 
 // Define the schema for validation
 const FormSchema = z.object({
-  name: z.string().min(0, "First line must be a positive number."),
-  value: z.number().min(0, "Second line must be a positive number."),
-  
+  name: z.string().min(0, "Interest must be a positive number."),
+  value: z.number().min(0, "value must be a positive number."),
+  date: z.date({
+    required_error: "A date is required.",
+  }),
 });
 
 export default function InterestForm() {
@@ -53,7 +55,7 @@ const CardWrapper = () => {
       const requestData: IInterest = {
         name: data.name, // Convert to number
         value: Number(data.value), // Convert to number
-      
+        date: data.date,
       };
 
       const response = await fetch("/api/Interest", {
@@ -69,7 +71,7 @@ const CardWrapper = () => {
           title: "Data saved successfully",
         });
         form.reset({
-          name: '', // Reset name to 0 or any default value you want
+          name: "", // Reset name to 0 or any default value you want
           value: 0, // Reset value to 0 or any default value you want
         });
       } else {
@@ -90,7 +92,7 @@ const CardWrapper = () => {
     <>
       <Card>
         <CardHeader>
-          <h1>Paid Impressions</h1>
+          <h1>Interest Data</h1>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -103,14 +105,9 @@ const CardWrapper = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem className="flex flex-col col-span-2">
-                    <FormLabel>First Line</FormLabel>
+                    <FormLabel>Interest</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter first line (Number)"
-                        
-                       
-                      />
+                      <Input {...field} placeholder="Enter Interest" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,11 +118,11 @@ const CardWrapper = () => {
                 name="value"
                 render={({ field }) => (
                   <FormItem className="flex flex-col col-span-2">
-                    <FormLabel>Second Line</FormLabel>
+                    <FormLabel>value</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Enter second line (Number)"
+                        placeholder="Enter value (Number)"
                         type="number"
                         onChange={(e) => {
                           field.onChange(e); // Capture the change event
@@ -137,7 +134,47 @@ const CardWrapper = () => {
                   </FormItem>
                 )}
               />
-             
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col col-span-2">
+                    <FormLabel>Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[240px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange} // Correctly bind the date selection
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <Button
                 className=" col-span-1 mt-5 hover:scale-[1.02]  duration-[200] transition-transform  ease-in-out"
                 type="submit"

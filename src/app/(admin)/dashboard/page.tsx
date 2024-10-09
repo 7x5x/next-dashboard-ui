@@ -12,11 +12,12 @@ import { RANGE_OPTIONS } from "@/lib/rangeOptions";
 import { ClikeRateProps } from "@/types/ClikeRateProps";
 import { PaidImpressionsProps } from "@/types/OrderByDayProps";
 
-const fetchData = async () => {
+const fetchData = async (totalSalesRangeOption:any) => {
   try {
-    return  await DashboardServices.getAllDashboardData();
-   
-   
+    return await DashboardServices.getAllDashboardData(
+      totalSalesRangeOption?.startDate,
+      totalSalesRangeOption?.endDate
+    );
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
   }
@@ -24,7 +25,7 @@ const fetchData = async () => {
 
 const data: PaidImpressionsProps[] = [
   { date: "2024-09-20", income: 400, expense: 240 },
-   { date: "2024-10-06", income: 11, expense: 111 },
+  { date: "2024-10-06", income: 11, expense: 111 },
   { date: "2024-09-21", income: 300, expense: 139 },
   { date: "2024-09-22", income: 200, expense: 980 },
   { date: "2024-09-23", income: 278, expense: 390 },
@@ -39,11 +40,8 @@ const data: PaidImpressionsProps[] = [
   { date: "2024-10-02", income: 420, expense: 510 },
   { date: "2024-10-03", income: 450, expense: 540 },
   { date: "2024-10-04", income: 470, expense: 560 },
-  
 ];
 
-
- 
 const clikeRateChartData = [
   {
     name: "Mon",
@@ -71,8 +69,28 @@ const clikeRateChartData = [
     absent: 55,
   },
 ];
-const AdminPage = async () => {
-  const dashboardData = await fetchData();
+const AdminPage = async ({
+  searchParams: { startDate, endDate },
+}: {
+  searchParams: { startDate: string; endDate: string };
+  }) => {
+   let totalSalesRangeOption;
+   switch (startDate) {
+     case "last_30_days":
+       totalSalesRangeOption = RANGE_OPTIONS.last_30_days;
+       break;
+     case "last_90_days":
+       totalSalesRangeOption = RANGE_OPTIONS.last_90_days;
+       break;
+     case "last_365_days":
+       totalSalesRangeOption = RANGE_OPTIONS.last_365_days;
+       break;
+
+     default:
+       totalSalesRangeOption = RANGE_OPTIONS.last_7_days;
+       break;
+   }
+  const dashboardData = await fetchData(totalSalesRangeOption);
 
   // Handle potential null from fetchData
   if (!dashboardData) {
@@ -87,13 +105,19 @@ const AdminPage = async () => {
     formattedPaidImpressions = [] as PaidImpressionsProps[],
   } = dashboardData;
 
-
-  const totalSalesRangeOption = RANGE_OPTIONS.last_7_days;
+   
   return (
     <div className="p-4 flex gap-4 flex-col md:flex-row">
       {/* LEFT */}
       <div className="w-full lg:full  flex flex-col gap-8">
         {/* USER CARDS */}
+        <ChartCard
+          title="Filter"
+          queryKey="startDate"
+          selectedRangeLabel={totalSalesRangeOption.label}
+        >
+          <div className="w-full"></div>
+        </ChartCard>
         <div className=" h-30 w-full grid grid-cols-5 gap-6">
           <InterestCard interest={interest} />
           <TotalVistorCard vistorCount={vistorCount} />
@@ -109,22 +133,15 @@ const AdminPage = async () => {
           </div>
         </div>
 
-        <ChartCard
-          title="Paid Impressions"
-          queryKey="totalSalesRange"
-          selectedRangeLabel={totalSalesRangeOption.label}
-        >
-          <div className="w-full h-[500px]">
-            <PaidImpressionsChart data={formattedPaidImpressions} />
-          </div>
-        </ChartCard>
+        <div className="w-full h-[500px]">
+          <PaidImpressionsChart data={formattedPaidImpressions} />
+        </div>
       </div>
     </div>
   );
 };
 
 export default AdminPage;
-
 
 const TotalVistorCard = ({ vistorCount }: { vistorCount: number }) => {
   return (
@@ -170,4 +187,3 @@ const InterestCard = ({ interest }: { interest: IInterest[] }) => {
     </Card>
   );
 };
-

@@ -1,9 +1,7 @@
-import AdminPage from "./admin/dashboard/page"
+import AdminPage from "./(admin)/dashboard/page";
 
 const Homepage = () => {
-  return (
-   <AdminPage></AdminPage>
-  )
-}
+  return <AdminPage></AdminPage>;
+};
 
-export default Homepage
+export default Homepage;

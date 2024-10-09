@@ -23,6 +23,9 @@ export function PaidImpressionsChart({ data }: {data:PaidImpressionsProps[]}) {
   };
   return (
     <div className="bg-white rounded-xl w-full h-full p-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-lg font-semibold">Paid Impressions</h1>
+      </div>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={getFilteredData()}
